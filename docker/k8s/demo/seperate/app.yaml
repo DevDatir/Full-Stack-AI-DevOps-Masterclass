@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "3"
+  creationTimestamp: "2026-07-04T10:40:54Z"
+  generation: 3
+  labels:
+    app: myApp
+  name: yamldeployment
+  namespace: default
+  resourceVersion: "28420"
+  uid: 678fa5fe-def2-4c2f-910b-c12228891ecf
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: myApp
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: myApp
+    spec:
+      containers:
+      - image: nginx:latest
+        imagePullPolicy: Always
+        name: nginx
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2026-07-04T10:40:54Z"
+    lastUpdateTime: "2026-07-04T14:21:44Z"
+    message: ReplicaSet "web-799996dd5c" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2026-07-06T18:45:32Z"
+    lastUpdateTime: "2026-07-06T18:45:32Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 3
+  readyReplicas: 1
+  replicas: 1
+  terminatingReplicas: 0
+  updatedReplicas: 1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2026-07-04T13:27:02Z"
+  labels:
+    app: myApp
+  name: yamlservice
+  namespace: default
+  resourceVersion: "6879"
+  uid: 22fc5502-cea5-4bb9-945f-6a5047d8ac17
+spec:
+  ports:
+  - nodePort: 30815
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: myApp
+  type: NodePort
+status:
+  loadBalancer: {}
