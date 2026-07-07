@@ -1,17 +1,26 @@
 name: workflow
 on:
-
-  workflow_dispatch:
+    workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
+        
+        steps:
+            - uses: actions/checkout@v4
 
-    steps:
-      - uses: actions/checkout@v4
+            - name: useEnvs
+              env:
+                username: "Dev Datir"
+                password: ${{ secrets.password }}
+              run: echo "username is $username and password is $password"
 
-      - name: useEnvs
-        env:
-            username: "Dev Datir"
-            password: ${{ secrets.password}}
-        run: echo "username is $username and password is $password"
+            - name: create a txtFile
+              run: |
+                    echo "This is a txt file" > myFile.txt
+                    echo "File is created successfully"
+
+            - uses: actions/upload-artifact@v4
+              with:
+                    name: build-artifact-demo
+                    path: .
