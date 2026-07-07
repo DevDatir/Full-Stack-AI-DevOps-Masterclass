@@ -20,7 +20,7 @@ jobs:
                 echo "This is a txt file" > myFile.txt
                 echo "File is created successfully"
 
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               with:
                 name: build-artifact-demo
                 path: .
