@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2026-07-04T13:27:02Z"
+  labels:
+    app: myApp
+  name: yamlservice
+  namespace: default
+  resourceVersion: "6879"
+  uid: 22fc5502-cea5-4bb9-945f-6a5047d8ac17
+spec:
+  ports:
+  - nodePort: 30815
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: myApp
+  type: NodePort
+status:
+  loadBalancer: {}
