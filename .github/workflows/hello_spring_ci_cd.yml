@@ -70,4 +70,4 @@ jobs:
               run: kubectl get nodes
 
             - name: Deploy
-              run: kubectl apply -f k8s/hello-spring
+              run: kubectl apply -f docker/k8s/hello-spring
