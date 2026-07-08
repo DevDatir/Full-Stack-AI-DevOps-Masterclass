@@ -91,7 +91,7 @@ jobs:
               run: kubectl get nodes
 
             - name: Deploy service-a
-              run: kubectl apply -f docker/k8s/service-a
+              run: kubectl apply -f docker/k8s/service-a/app.yaml
 
             - name: Deploy service-b
-              run: kubectl apply -f docker/k8s/service-b
+              run: kubectl apply -f docker/k8s/service-b/app.yaml
