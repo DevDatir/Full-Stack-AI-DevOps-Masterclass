@@ -1,0 +1,97 @@
+name: Tax Calculator Spring CI/CD using K8s locally
+on:
+    push
+
+jobs:
+    buildAndTest:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v6
+
+            - name: Set up java
+              uses: actions/setup-java@v5
+              with:
+                java-version: '21'
+                distribution: 'temurin'
+
+            - name: Build service-a with Maven
+              working-directory: docker/app2-tax-calculator/spring/service-a
+              run: mvn clean verify
+
+            - name: Build service-b with Maven
+              working-directory: docker/app2-tax-calculator/spring/service-b
+              run: mvn clean verify
+
+            - name: upload test reports service-a
+              uses: actions/upload-artifact@v7
+              with:
+                name: test-reports-service-a
+                path: docker/app2-tax-calculator/spring/service-a/target/surefire-reports
+
+            - name: upload test reports service-b
+              uses: actions/upload-artifact@v7
+              with:
+                name: test-reports-service-b
+                path: docker/app2-tax-calculator/spring/service-b/target/surefire-reports
+
+    dockerBuildPush:
+        runs-on: ubuntu-latest
+        needs: buildAndTest
+        steps:
+            - uses: actions/checkout@v6
+
+            - name: Set up java
+              uses: actions/setup-java@v5
+              with:
+                java-version: '21'
+                distribution: 'temurin'
+
+            - name: Build JAR for service-a
+              working-directory: docker/app2-tax-calculator/spring/service-a
+              run: mvn package -DskipTests
+
+            - name: Build JAR for service-b
+              working-directory: docker/app2-tax-calculator/spring/service-b
+              run: mvn package -DskipTests
+
+            - name: login to docker hub
+              uses: docker/login-action@v4
+              with:
+                username: ${{ secrets.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_PASSWORD }}
+
+            - name: Build and push service-a docker image
+              uses: docker/build-push-action@v7
+              with:
+                context: docker/app2-tax-calculator/spring/service-a
+                push: true
+                tags: devdatir/tax-service-a:latest
+
+            - name: Build and push service-b docker image
+              uses: docker/build-push-action@v7
+              with:
+                context: docker/app2-tax-calculator/spring/service-b
+                push: true
+                tags: devdatir/tax-service-b:latest
+
+    deploy-local-k8s:
+        runs-on: self-hosted
+        needs: dockerBuildPush
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Verify kubectl
+              run: kubectl version --client
+
+            - name: Check Kubernetes Context
+              run: kubectl config current-context
+
+            - name: Verify Cluster
+              run: kubectl get nodes
+
+            - name: Deploy service-a
+              run: kubectl apply -f docker/k8s/service-a
+
+            - name: Deploy service-b
+              run: kubectl apply -f docker/k8s/service-b

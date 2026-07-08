@@ -23,7 +23,7 @@ spec:
         app: service-b
     spec:
       containers:
-      - image: embarkx/tax-service-b
+      -         image: devdatir/tax-service-b:latest
         imagePullPolicy: Always
         name: tax-service-b
         resources: {}
