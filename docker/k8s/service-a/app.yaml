@@ -23,7 +23,7 @@ spec:
         app: service-a
     spec:
       containers:
-      -         image: devdatir/tax-service-a:latest
+      - image: devdatir/tax-service-a:latest
         imagePullPolicy: Always
         name: tax-service-a
         resources: {}
