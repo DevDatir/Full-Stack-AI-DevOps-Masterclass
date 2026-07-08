@@ -29,6 +29,9 @@ spec:
         resources: {}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
+        env:
+        - name: ENV_VALUE
+          value: "DEV"
 
       dnsPolicy: ClusterFirst
       restartPolicy: Always
