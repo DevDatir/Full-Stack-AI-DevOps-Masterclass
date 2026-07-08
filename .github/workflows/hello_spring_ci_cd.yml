@@ -4,7 +4,7 @@ on:
 
 jobs:
     buildAndTest:
-        runs-on: self-hosted
+        runs-on: ubantu-latest
 
         steps:
             - uses: actions/checkout@v6
@@ -26,7 +26,7 @@ jobs:
                 path : docker/app1-hello/springboot/hello-spring/target/surefire-reports
 
     dockerBuildPush:
-        runs-on: self-hosted
+        runs-on: ubantu-latest
         needs: buildAndTest
         steps:
             - uses: actions/checkout@v6
